@@ -28,6 +28,7 @@ function TodoList({ todoList, setTodoList }) {
                 type="checkbox"
                 onClick={() => completeTask(todo.id)}
                 id={todo.id}
+                checked={todo.isCompleted}
               />
               <div className="todo-list-view">
                 <p className={todo.isCompleted ? "todoParaStrike" : "todoPara"}>
