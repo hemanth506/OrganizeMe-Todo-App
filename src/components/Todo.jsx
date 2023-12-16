@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TodoList from "./TodoList";
 
 function Todo() {
   const localtodoItem = JSON.parse(localStorage.getItem("todoListItems")) || [];
   const [todo, setTodo] = useState("");
   const [todoList, setTodoList] = useState(localtodoItem);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     localStorage.setItem("todoListItems", JSON.stringify(todoList));
-  }, [todoList]);
+    inputRef.current?.focus();
+  }, [todoList]);  
 
   const addTodo = () => {
     if (todo) {
@@ -30,6 +32,7 @@ function Todo() {
           placeholder="Enter your todo..."
           value={todo}
           onChange={(e) => setTodo(e.target.value)}
+          ref={inputRef}
         />
         <button className="todoButton" onClick={addTodo}>
           Add
