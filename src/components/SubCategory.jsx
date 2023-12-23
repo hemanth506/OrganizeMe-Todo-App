@@ -1,40 +1,53 @@
-import React, { useContext } from "react";
-import { FaCircleMinus } from "react-icons/fa6";
-import { CategoryContext } from "./FileContainer";
+import React, { useCallback, useContext } from "react";
+import { CategoryDataContext, CategoryContext } from "./FileContainer";
+import { Button } from "@mui/material";
+import { createButton } from "./styling";
+import { ImCross } from "react-icons/im";
 
 export const SubCategory = ({ subCategory, categoryID }) => {
-  const [categoryData, setCategoryData] = useContext(CategoryContext);
+  const [categoryData, setCategoryData] = useContext(CategoryDataContext);
+  const [, setActiveCategory] = useContext(CategoryContext);
 
-  const handleDeleteSubCategory = () => {
+  const handleActiveCategory = useCallback(() => {
+    setActiveCategory([categoryID, subCategory.id]);
+  }, [categoryID, subCategory]);
+
+  const handleDeleteSubCategory = useCallback(() => {
     const currentCategoryData = categoryData.filter(
       (tempCatogery) => tempCatogery.id === categoryID
     );
 
-    const updatedSubCategory = currentCategoryData[0].subCategory.filter(
-      (tempSubCategory) => tempSubCategory.id !== subCategory.id
-    );
+    if (currentCategoryData.length > 0) {
+      const updatedSubCategory = currentCategoryData[0].subCategory.filter(
+        (tempSubCategory) => tempSubCategory.id !== subCategory.id
+      );
 
-    const updatedCategory = [];
-    categoryData.forEach((element) => {
-      if (currentCategoryData[0].id === element.id) {
-        const obj = {
-          ...element,
-          subCategory: updatedSubCategory,
-        };
-        updatedCategory.push(obj);
-      } else {
-        updatedCategory.push(element);
-      }
-    });
-    setCategoryData(updatedCategory);
-  };
+      const updatedCategory = [];
+      categoryData.forEach((element) => {
+        if (currentCategoryData[0].id === element.id) {
+          updatedCategory.push({
+            ...element,
+            subCategory: updatedSubCategory,
+          });
+        } else {
+          updatedCategory.push(element);
+        }
+      });
+
+      setCategoryData(updatedCategory);
+    }
+  }, [categoryData, categoryID]);
+
   return (
-    <div style={{ ...divStyle }}>
-      <span style={{ ...spanStyle }}>{subCategory.title}</span>
-      <FaCircleMinus
-        style={{ ...iconStyle }}
+    <div style={divStyle} onClick={handleActiveCategory}>
+      <span style={spanStyle}>{subCategory.title}</span>
+      <Button
+        variant="contained"
+        style={iconStyle}
         onClick={handleDeleteSubCategory}
-      />
+      >
+        <ImCross style={{ color: "white" }} />
+      </Button>
     </div>
   );
 };
@@ -54,17 +67,6 @@ const divStyle = {
 };
 
 const iconStyle = {
-  fontSize: "22px",
-  cursor: "pointer",
-  color: "red",
-  backgroundcolor: "red",
-};
-
-/**
- * const iconStyle = {
-  fontSize: "22px",
-  cursor: "pointer",
-  color: "#FF6347",
-  backgroundcolor: "#FF6347",
-};
- */
+  ...createButton(9, "8px", "25px", "OrangeRed"),
+  height: "10px",
+}

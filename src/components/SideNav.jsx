@@ -1,41 +1,50 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { Box, Button } from "@mui/material";
 import { FaCheck } from "react-icons/fa6";
 import { createButton } from "./styling.js";
 import { Category } from "./Category.jsx";
-import { CategoryContext } from "./FileContainer";
+import { CategoryDataContext } from "./FileContainer";
 
 export const SideNav = () => {
-  const [categoryList, setCategoryList] = useContext(CategoryContext);
+  const [categoryList, setCategoryList] = useContext(CategoryDataContext);
   const [categoryName, setCategoryName] = useState("");
 
-  const addCategory = () => {
-    if(categoryName) {
+  const addCategory = useCallback(() => {
+    if (categoryName) {
       setCategoryList([
         ...categoryList,
         { id: Date.now(), title: categoryName, subCategory: [] },
       ]);
       setCategoryName("");
     }
-  };
+  }, [categoryName, categoryList]);
 
   return (
-    <Box sx={{ ...mainStyle }}>
-      <div style={{ ...divStyle }}>
-        {categoryList.map((category) => (
-          <Category key={category.id} category={category}/>
-        ))}
-      </div>
-      <Box style={{ ...sectionFooterStyle }}>
+    <Box sx={mainStyle}>
+      {
+        <div style={divStyle}>
+          {categoryList.length > 0 ? (
+            <div>
+              {categoryList.map((category) => (
+                <Category key={category.id} category={category} />
+              ))}
+            </div>
+          ) : (
+            <div style={noCategoryStyle}>No Category</div>
+          )}
+        </div>
+      }
+
+      <Box style={sectionFooterStyle}>
         <input
           placeholder="Create new category"
-          style={{ ...sectionInputStyle }}
+          style={sectionInputStyle}
           value={categoryName}
           onChange={(e) => setCategoryName(e.target.value)}
         />
         <Button
           variant="contained"
-          style={{ ...createButton }}
+          style={createButton(12, "17px", "50px", "lightgreen")}
           onClick={addCategory}
         >
           <FaCheck style={{ color: "green" }} />
@@ -43,6 +52,12 @@ export const SideNav = () => {
       </Box>
     </Box>
   );
+};
+
+const noCategoryStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 };
 
 const sectionFooterStyle = {

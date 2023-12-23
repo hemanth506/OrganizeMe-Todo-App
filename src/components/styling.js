@@ -1,9 +1,11 @@
-const createButton = {
-  borderRadius: 12,
-  padding: "2vh 0px",
-  fontSize: "17px",
-  minWidth: "50px",
-  backgroundColor: "lightgreen",
+const createButton = (borderRadius, fontSize, minWidth, backgroundColor) => {
+  return {
+    borderRadius: borderRadius,
+    padding: "13px 0px",
+    fontSize: fontSize,
+    minWidth: minWidth,
+    backgroundColor: backgroundColor,
+  };
 };
 
 module.exports = { createButton };

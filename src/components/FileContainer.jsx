@@ -3,53 +3,37 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { SideNav } from "./SideNav";
 import { MainContent } from "./MainContent";
+import { defaultData } from "../data";
 
+export const CategoryDataContext = createContext();
 export const CategoryContext = createContext();
 
 export const FileContainer = () => {
-  const categoryData = useState([
-    {
-      id: Date.now() + 1,
-      title: "Personal",
-      subCategory: [
-        { id: "1", title: "Shopping" },
-        { id: "2", title: "Health" },
-        { id: "3", title: "Entertainment" },
-      ],
-    },
-    {
-      id: Date.now(),
-      title: "Learning",
-      subCategory: [
-        { id: "1", title: "Data Structures" },
-        { id: "2", title: "React" },
-        { id: "3", title: "Docket" },
-      ],
-    },
-  ]);
+  const categoryData = useState(defaultData);
+  const activeCategory = useState([null, null]);
 
   return (
-    <CategoryContext.Provider value={categoryData}>
-      <Box sx={{ flexGrow: 1 }}>
-        <Grid
-          container
-          columnSpacing={{ sm: 0.5, md: 0.5, lg: 0.5, xl: 2 }}
-          columns={12}
-        >
-          <Grid item xs={3} md={3} sx={{ ...gridStyle }}>
-            <SideNav />
+    <CategoryContext.Provider value={activeCategory}>
+      <CategoryDataContext.Provider value={categoryData}>
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container columnSpacing={gridColumnSpacing} columns={12}>
+            <Grid item xs={3} md={3} sx={gridStyle}>
+              <SideNav />
+            </Grid>
+            <Grid item xs={9} md={9} sx={gridStyle}>
+              <MainContent />
+            </Grid>
           </Grid>
-          <Grid item xs={9} md={9} sx={{ ...gridStyle }}>
-            <MainContent />
-          </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      </CategoryDataContext.Provider>
     </CategoryContext.Provider>
   );
 };
 
+const gridColumnSpacing = { sm: 0.5, md: 0.5, lg: 0.5, xl: 2 };
+
 const gridStyle = {
-  border: 1,
+  borderLeft: 1,
   borderRadius: 0.5,
   borderColor: "lightgrey",
   height: "100vh",

@@ -1,25 +1,29 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import { Box } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 import { GrAdd } from "react-icons/gr";
 import { SubCategory } from "./SubCategory";
-import { CategoryContext } from "./FileContainer";
-
-const BORDER_RADIUS = "5px";
+import { CategoryDataContext } from "./FileContainer";
 
 export const Category = ({ category }) => {
-  const [categoryData, setCategoryData] = useContext(CategoryContext);
+  const [categoryData, setCategoryData] = useContext(CategoryDataContext);
   const inputRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
   const [inputSyle, setInputStyle] = useState(disabledInputStyle);
   const [subCategoryName, setSubCategoryName] = useState("");
 
-  const handleInput = () => {
+  const handleInput = useCallback(() => {
     setDisabled((prevState) => !prevState);
-  };
+  }, []);
 
   useEffect(() => {
-    if (disabled === false) {
+    if (!disabled) {
       inputRef.current.focus();
       setInputStyle(enabledInputField);
     } else {
@@ -27,42 +31,53 @@ export const Category = ({ category }) => {
     }
   }, [disabled]);
 
-  const onKeyDownEvent = (event) => {
-    if (event.key === "Enter") {
-      const subObj = { id: Date.now().toString(), title: subCategoryName };
-      category.subCategory = [...category.subCategory, subObj];
-      setSubCategoryName("");
-    }
-  };
+  useEffect(() => {}, [subCategoryName]);
 
-  const handleDeleteCategory = () => {
+  const onKeyDownEvent = useCallback(
+    (event) => {
+      if (event.key === "Enter") {
+        const subObj = {
+          id: Date.now().toString(),
+          title: subCategoryName,
+          todos: [],
+          links: [],
+          notes: [],
+        };
+        category.subCategory = [...category.subCategory, subObj];
+        setSubCategoryName("");
+      }
+    },
+    [subCategoryName]
+  );
+
+  const handleDeleteCategory = useCallback(() => {
     const updatedCategoryData = categoryData.filter(
       (tempCatogery) => tempCatogery.id !== category.id
     );
     setCategoryData(updatedCategoryData);
-  };
+  }, [categoryData]);
 
   return (
-    <Box sx={{ ...boxStyle }}>
-      <div style={{ ...titleDivStyle }}>
-        <span
-          style={{ fontSize: "22px", fontWeight: "600", fontFamily: "Poppins" }}
-        >
-          {category.title}
-        </span>
+    <Box sx={boxStyle}>
+      <div style={titleDivStyle}>
+        <span style={spanStyle}>{category.title}</span>
         <MdDelete
-          style={{ ...deleteIconStyle }}
+          style={deleteIconStyle}
           onClick={handleDeleteCategory}
           value={category.title}
         />
       </div>
       <div style={{ margin: "0px 15px 5px 30px" }}>
-        {category.subCategory.map((subCategory) => (
-          <SubCategory key={subCategory.id} categoryID={category.id} subCategory={subCategory} />
+        {category?.subCategory?.map((subCategory) => (
+          <SubCategory
+            key={subCategory.id}
+            categoryID={category.id}
+            subCategory={subCategory}
+          />
         ))}
       </div>
       <div style={{ display: "flex", gap: "5px" }}>
-        <GrAdd onClick={handleInput} style={{ ...iconStyle }} />
+        <GrAdd onClick={handleInput} style={iconStyle} />
         <input
           ref={inputRef}
           placeholder="Create sub category"
@@ -77,21 +92,25 @@ export const Category = ({ category }) => {
   );
 };
 
+const spanStyle = {
+  fontSize: "22px",
+  fontWeight: "600",
+  fontFamily: "Poppins",
+};
+
 const iconStyle = {
   border: "1px solid lightgrey",
   backgroundColor: "lightgrey",
   padding: "4px",
   fontSize: "13px",
-  borderRadius: BORDER_RADIUS,
+  borderRadius: "5px",
   cursor: "pointer",
 };
 
 const boxStyle = {
   fontFamily: "Poppins",
   margin: "5% 5%",
-  // border: "1px solid lightgrey",
   padding: "5px 15px 10px 10px",
-  // borderRadius: BORDER_RADIUS,
 };
 
 const titleDivStyle = {
@@ -101,7 +120,11 @@ const titleDivStyle = {
   width: "80%",
 };
 
-const deleteIconStyle = { fontSize: "25px", color: "red", cursor: "pointer" };
+const deleteIconStyle = {
+  fontSize: "25px",
+  color: "Tomato",
+  cursor: "pointer",
+};
 
 const disabledInputStyle = {
   outline: "none",
@@ -119,5 +142,5 @@ const enabledInputField = {
   width: "100%",
   fontSize: "14px",
   borderColor: "lightgray",
-  borderRadius: BORDER_RADIUS,
+  borderRadius: "5px",
 };
