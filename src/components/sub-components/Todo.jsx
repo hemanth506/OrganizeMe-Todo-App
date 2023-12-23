@@ -1,14 +1,16 @@
 import React, { useState, useCallback } from "react";
-import { Checkbox, Button } from "@mui/material";
+import { Checkbox, Button, Switch } from "@mui/material";
 import { createButton } from "../../styling.js";
 import { ImCross } from "react-icons/im";
 
-export const Todo = ({ todo, setDeleteTodoId }) => {
+export const Todo = ({ todo, setDeleteTodoId, setcheckedTodoId }) => {
   const [isChecked, setIsChecked] = useState(todo.isCompleted);
 
   const handleCheckEvent = useCallback(() => {
     setIsChecked((prev) => !prev);
-  }, []);
+    console.log("🚀 ~ file: Todo.jsx:13 ~ handleCheckEvent ~ todo.id:", todo.id)
+    setcheckedTodoId(todo.id);
+  }, [todo.id]);
 
   const deleteTodo = useCallback(() => {
     setDeleteTodoId(todo.id);
@@ -19,9 +21,9 @@ export const Todo = ({ todo, setDeleteTodoId }) => {
       <Checkbox
         inputProps={{ "aria-label": "controlled" }}
         color="success"
-        defaultChecked={isChecked}
+        checked={isChecked}
         value={isChecked}
-        onClick={handleCheckEvent}
+        onChange={handleCheckEvent}
       />
       <div style={innerDiv}>
         <span style={{ textDecoration: isChecked ? "line-through" : null }}>

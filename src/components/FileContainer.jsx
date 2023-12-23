@@ -9,7 +9,8 @@ export const CategoryDataContext = createContext();
 export const CategoryContext = createContext();
 
 export const FileContainer = () => {
-  const categoryData = useState(defaultData);
+  const getDefaultData = JSON.parse(localStorage.getItem("categoryData")) || [];
+  const categoryData = useState(getDefaultData);
   const activeCategory = useState([null, null]);
 
   return (

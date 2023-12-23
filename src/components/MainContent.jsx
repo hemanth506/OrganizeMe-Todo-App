@@ -15,6 +15,7 @@ import { Link } from "./sub-components/Link.jsx";
 
 export const MainContent = () => {
   const [categoryData, setCategoryData] = useContext(CategoryDataContext);
+  localStorage.setItem("categoryData", JSON.stringify(categoryData));
   const [activeCategory] = useContext(CategoryContext);
   const [categoryID, subCategoryID] = activeCategory;
   const [displaySubCategory, setDisplaySubCategory] = useState({});
@@ -26,6 +27,7 @@ export const MainContent = () => {
   const [deleteNoteId, setDeleteNoteId] = useState(null);
   const [deleteLinkId, setDeleteLinkId] = useState(null);
   const [dataExist, setDataExist] = useState(false);
+  const [checkedTodoId, setcheckedTodoId] = useState(null);
 
   useEffect(() => {
     if (categoryID && subCategoryID) {
@@ -63,7 +65,7 @@ export const MainContent = () => {
     } else {
       setDataExist(false);
     }
-  }, [,categoryData, categoryID, subCategoryID]);
+  }, [categoryData, categoryID, subCategoryID]);
 
   const handleAddEvent = useCallback(() => {
     const defaultContent = {
@@ -113,6 +115,7 @@ export const MainContent = () => {
     setCategoryData,
   ]);
 
+  // deleteTodoId
   useEffect(() => {
     if (deleteTodoId) {
       setCategoryData((prevCategoryData) => {
@@ -138,6 +141,7 @@ export const MainContent = () => {
     }
   }, [deleteTodoId]);
 
+  // deleteNoteId
   useEffect(() => {
     if (deleteNoteId) {
       setCategoryData((prevCategoryData) => {
@@ -161,6 +165,7 @@ export const MainContent = () => {
     }
   }, [deleteNoteId]);
 
+  // deleteLinkId
   useEffect(() => {
     if (deleteLinkId) {
       setCategoryData((prevCategoryData) => {
@@ -183,6 +188,37 @@ export const MainContent = () => {
       });
     }
   }, [deleteLinkId]);
+
+  // checkedTodoId
+  useEffect(() => {
+    if (checkedTodoId) {
+      setCategoryData((prevCategoryData) => {
+        const newCategoryData = prevCategoryData.map((category) => {
+          if (category.id === categoryID) {
+            const newSubCategory = category.subCategory.map((subCat) => {
+              if (subCat.id === subCategoryID) {
+                const newTodos = subCat.todos.map((tempTodo) => {
+                  console.log("tempTodo", tempTodo);
+                  if (tempTodo.id === checkedTodoId) {
+                    tempTodo.isCompleted = !tempTodo.isCompleted;
+                  }
+                  return tempTodo;
+                });
+                return { ...subCat, todos: newTodos };
+              }
+              return subCat;
+            });
+
+            return { ...category, subCategory: newSubCategory };
+          }
+          return category;
+        });
+
+        return newCategoryData;
+      });
+      setcheckedTodoId(null);
+    }
+  }, [checkedTodoId, categoryData]);
 
   const memoizedDisplaySubCategory = useMemo(
     () => displaySubCategory,
@@ -222,6 +258,7 @@ export const MainContent = () => {
                   key={todo.id}
                   todo={todo}
                   setDeleteTodoId={setDeleteTodoId}
+                  setcheckedTodoId={setcheckedTodoId}
                 />
               ))}
             </div>
