@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Checkbox, Button } from "@mui/material";
-import { createButton } from "../styling.js";
+import { createButton } from "../../styling.js";
 import { ImCross } from "react-icons/im";
 
 export const Todo = ({ todo, setDeleteTodoId }) => {

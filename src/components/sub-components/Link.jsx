@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Button } from "@mui/material";
-import { createButton } from "../styling.js";
+import { createButton } from "../../styling.js";
 import { ImCross } from "react-icons/im";
 
 export const Link = ({ link, setDeleteLinkId }) => {

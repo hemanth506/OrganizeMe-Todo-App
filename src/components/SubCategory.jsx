@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from "react";
 import { CategoryDataContext, CategoryContext } from "./FileContainer";
 import { Button } from "@mui/material";
-import { createButton } from "./styling";
+import { createButton } from "../styling";
 import { ImCross } from "react-icons/im";
 
 export const SubCategory = ({ subCategory, categoryID }) => {

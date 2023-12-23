@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from "react";
 import { CategoryDataContext, CategoryContext } from "./FileContainer";
-import { createButton } from "./styling.js";
+import { createButton } from "../styling.js";
 import { Box, Button, Tabs, Tab } from "@mui/material";
 import { FaPlus } from "react-icons/fa6";
 import { Todo } from "./sub-components/Todo.jsx";
