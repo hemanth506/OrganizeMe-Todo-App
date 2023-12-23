@@ -8,7 +8,7 @@ export const defaultData = [
         title: "Shopping",
         todos: [
           { id: "1", title: "Buy Suit", isCompleted: false },
-          { id: "2", title: "Go to mall", isCompleted: false },
+          { id: "2", title: "Go to mall", isCompleted: true },
           { id: "3", title: "Buy watch", isCompleted: false },
           { id: "4", title: "Buy Shoe", isCompleted: false },
           { id: "5", title: "Go to Theater", isCompleted: false },

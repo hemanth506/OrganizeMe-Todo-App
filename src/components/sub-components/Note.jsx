@@ -6,7 +6,7 @@ import { ImCross } from "react-icons/im";
 export const Note = ({ note, setDeleteNoteId }) => {
   const deleteNote = useCallback(() => {
     setDeleteNoteId(note.id);
-  }, []);
+  }, [note.id]);
 
   return (
     <div style={divStyle}>
@@ -16,7 +16,7 @@ export const Note = ({ note, setDeleteNoteId }) => {
           <ImCross style={{ color: "red" }} />
         </Button>
       </div>
-      <span>{note.description}</span>
+      <span style={{textWrap: "wrap"}}>{note.description}</span>
     </div>
   );
 };
@@ -34,7 +34,7 @@ const innerDivStyle = {
 
 const divStyle = {
   height: "fit-content",
-  width: "200px",
+  width: "fit-content",
   display: "flex",
   flexDirection: "column",
   border: "1px solid",

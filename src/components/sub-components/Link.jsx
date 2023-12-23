@@ -6,7 +6,7 @@ import { ImCross } from "react-icons/im";
 export const Link = ({ link, setDeleteLinkId }) => {
   const deleteLink = useCallback(() => {
     setDeleteLinkId(link.id);
-  }, []);
+  }, [link.id]);
 
   return (
     <div style={divStyle}>

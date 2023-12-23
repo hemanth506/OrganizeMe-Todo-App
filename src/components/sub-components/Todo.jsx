@@ -1,4 +1,4 @@
-import React, { useState, useContext, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { Checkbox, Button } from "@mui/material";
 import { createButton } from "../styling.js";
 import { ImCross } from "react-icons/im";
@@ -12,23 +12,21 @@ export const Todo = ({ todo, setDeleteTodoId }) => {
 
   const deleteTodo = useCallback(() => {
     setDeleteTodoId(todo.id);
-  }, []);
+  }, [todo.id]);
 
   return (
     <div style={divStyle}>
       <Checkbox
         inputProps={{ "aria-label": "controlled" }}
         color="success"
+        defaultChecked={isChecked}
         value={isChecked}
         onClick={handleCheckEvent}
       />
-      <div
-        style={{
-          ...innerDiv,
-          textDecoration: isChecked ? "line-through" : null,
-        }}
-      >
-        <span>{todo.title}</span>
+      <div style={innerDiv}>
+        <span style={{ textDecoration: isChecked ? "line-through" : null }}>
+          {todo.title}
+        </span>
         <Button variant="contained" style={buttonStyle} onClick={deleteTodo}>
           <ImCross style={{ color: "red" }} />
         </Button>
