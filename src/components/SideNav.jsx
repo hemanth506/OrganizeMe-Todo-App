@@ -31,7 +31,7 @@ export const SideNav = () => {
               ))}
             </div>
           ) : (
-            <div style={noCategoryStyle}>No Category</div>
+            <div style={noCategoryStyle}>No Available Category</div>
           )}
         </div>
       }

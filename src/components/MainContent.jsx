@@ -12,6 +12,7 @@ import { FaPlus } from "react-icons/fa6";
 import { Todo } from "./sub-components/Todo.jsx";
 import { Note } from "./sub-components/Note.jsx";
 import { Link } from "./sub-components/Link.jsx";
+import { NoContent } from "./sub-components/NoContent.jsx";
 
 export const MainContent = () => {
   const [categoryData, setCategoryData] = useContext(CategoryDataContext);
@@ -29,6 +30,7 @@ export const MainContent = () => {
   const [dataExist, setDataExist] = useState(false);
   const [checkedTodoId, setcheckedTodoId] = useState(null);
 
+  // Sets the title and the subCategory data
   useEffect(() => {
     if (categoryID && subCategoryID) {
       const currentCat = categoryData.filter(
@@ -47,6 +49,7 @@ export const MainContent = () => {
     }
   }, [categoryID, subCategoryID, categoryData]);
 
+  // Re-renders if the category or sub-category got deleted.
   useEffect(() => {
     const currentCategory = categoryData.find(
       (category) => category.id === categoryID
@@ -66,6 +69,7 @@ export const MainContent = () => {
     }
   }, [categoryData, categoryID, subCategoryID]);
 
+  // Add the content based on the tab selected
   const handleAddEvent = useCallback(() => {
     const defaultContent = {
       id: Date.now().toString(),
@@ -269,6 +273,7 @@ export const MainContent = () => {
     }
   }, [checkedTodoId, categoryID, subCategoryID, setCategoryData]);
 
+  /* This memoize the subCategory which to be displayed and this will re-calculate only when the subCategory is changed */ 
   const memoizedDisplaySubCategory = useMemo(
     () => displaySubCategory,
     [displaySubCategory]
@@ -276,6 +281,7 @@ export const MainContent = () => {
 
   return (
     <Box sx={boxStyle}>
+      {/* Headers - Title */}
       <header style={divStyle}>
         {dataExist && memoizedDisplaySubCategory ? (
           <span style={headingSpanStyle}>
@@ -292,6 +298,7 @@ export const MainContent = () => {
         )}
       </header>
 
+      {/* Tob view */}
       <Tabs value={tab} onChange={(event, value) => setTab(value)}>
         <Tab value="todos" label="Todos" sx={tabHeadingStyle} />
         <Tab value="notes" label="Notes" sx={tabHeadingStyle} />
@@ -300,6 +307,11 @@ export const MainContent = () => {
 
       <main style={mainStyle}>
         <section style={{ overflow: "auto" }}>
+
+          {/* Renders no content */}
+          {!dataExist && <NoContent />}
+
+          {/* Renders todos data */}
           {dataExist && tab === "todos" && memoizedDisplaySubCategory[tab] ? (
             <div style={todoDivStyle}>
               {memoizedDisplaySubCategory[tab].map((todo) => (
@@ -313,6 +325,7 @@ export const MainContent = () => {
             </div>
           ) : null}
 
+          {/* Renders notes data */}
           {dataExist && tab === "notes" && memoizedDisplaySubCategory[tab] ? (
             <div style={notesDivStyle}>
               {memoizedDisplaySubCategory[tab].map((note) => (
@@ -325,6 +338,7 @@ export const MainContent = () => {
             </div>
           ) : null}
 
+          {/* Renders links data */}
           {dataExist && tab === "links" && memoizedDisplaySubCategory[tab] ? (
             <div style={linksDivStyle}>
               {memoizedDisplaySubCategory[tab].map((link) => (
@@ -339,6 +353,7 @@ export const MainContent = () => {
         </section>
 
         <footer style={footerStyle}>
+          {/* Input for todos */}
           {dataExist && tab === "todos" && (
             <input
               placeholder="Add new Todo"
@@ -348,6 +363,7 @@ export const MainContent = () => {
             />
           )}
 
+          {/* Input for notes */}
           {dataExist && tab === "notes" && (
             <div style={notesLinksFooter}>
               <input
@@ -365,6 +381,7 @@ export const MainContent = () => {
             </div>
           )}
 
+          {/* Input for links */}
           {dataExist && tab === "links" && (
             <div style={notesLinksFooter}>
               <input
@@ -383,6 +400,7 @@ export const MainContent = () => {
             </div>
           )}
 
+          {/* Buttons */}
           {dataExist && (
             <Button
               variant="contained"
@@ -397,6 +415,8 @@ export const MainContent = () => {
     </Box>
   );
 };
+
+/** Stylings */
 
 const notesLinksFooter = {
   display: "flex",
