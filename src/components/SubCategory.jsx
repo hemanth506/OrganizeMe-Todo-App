@@ -12,7 +12,8 @@ export const SubCategory = ({ subCategory, categoryID }) => {
     setActiveCategory([categoryID, subCategory.id]);
   }, [categoryID, subCategory]);
 
-  const handleDeleteSubCategory = useCallback(() => {
+  const handleDeleteSubCategory = useCallback((e) => {
+    e.stopPropagation();
     const currentCategoryData = categoryData.filter(
       (tempCatogery) => tempCatogery.id === categoryID
     );
