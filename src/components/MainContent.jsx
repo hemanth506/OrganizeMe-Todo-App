@@ -76,10 +76,15 @@ export const MainContent = () => {
     let updatedContent;
     if (tab === "todos") {
       updatedContent = { ...defaultContent, isCompleted: false };
-    } else if (tab === "notes") {
-      updatedContent = { ...defaultContent, description: subContent };
-    } else if (tab === "links") {
-      updatedContent = { ...defaultContent, contentURL: subContent };
+    } else if (tab === "notes" || tab === "links") {
+      if (subContent === "") {
+        return;
+      }
+      if (tab === "notes") {
+        updatedContent = { ...defaultContent, description: subContent };
+      } else if (tab === "links") {
+        updatedContent = { ...defaultContent, contentURL: subContent };
+      }
     }
 
     setCategoryData((prevCategoryData) => {
