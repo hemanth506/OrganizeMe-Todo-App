@@ -48,7 +48,6 @@ export const MainContent = () => {
   }, [categoryID, subCategoryID, categoryData]);
 
   useEffect(() => {
-    // console.log("categoryData = ", categoryData);
     const currentCategory = categoryData.find(
       (category) => category.id === categoryID
     );
@@ -109,7 +108,6 @@ export const MainContent = () => {
                 break;
               }
               trueArrValue.push(currentSubCategory[tab][k]);
-              console.log("======", currentSubCategory[tab][k]);
             }
             trueArrValue.push(updatedContent);
 
@@ -224,7 +222,6 @@ export const MainContent = () => {
             const newSubCategory = category.subCategory.map((subCat) => {
               if (subCat.id === subCategoryID) {
                 const newTodos = subCat.todos.map((tempTodo) => {
-                  // console.log("tempTodo", tempTodo);
                   if (tempTodo.id === checkedTodoId) {
                     tempTodo.isCompleted = !tempTodo.isCompleted;
                   }

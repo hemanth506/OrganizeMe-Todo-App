@@ -8,7 +8,6 @@ export const Todo = ({ todo, setDeleteTodoId, setcheckedTodoId }) => {
 
   const handleCheckEvent = useCallback(() => {
     setIsChecked((prev) => !prev);
-    // console.log("🚀 ~ file: Todo.jsx:13 ~ handleCheckEvent ~ todo.id:", todo.id)
     setcheckedTodoId(todo.id);
   }, [todo.id]);
 
