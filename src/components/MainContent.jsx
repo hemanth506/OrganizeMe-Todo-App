@@ -225,6 +225,32 @@ export const MainContent = () => {
     }
   }, [checkedTodoId, categoryData]);
 
+  // sorting the checked items
+  useEffect(() => {
+    if (checkedTodoId) {
+      setCategoryData((prevCategoryData) => {
+        const newCategoryData = prevCategoryData.map((category) => {
+          if (category.id === categoryID) {
+            const newSubCategory = category.subCategory.map((subCat) => {
+              if (subCat.id === subCategoryID) {
+                const sortedSubCategory = [...subCat.todos].sort((a, b) =>
+                  a.isCompleted === b.isCompleted ? 0 : a.isCompleted ? 1 : -1
+                );
+                return { ...subCat, todos: sortedSubCategory };
+              }
+              return subCat;
+            });
+
+            return { ...category, subCategory: newSubCategory };
+          }
+          return category;
+        });
+
+        return newCategoryData;
+      });
+    }
+  }, [checkedTodoId]);
+
   const memoizedDisplaySubCategory = useMemo(
     () => displaySubCategory,
     [displaySubCategory]
