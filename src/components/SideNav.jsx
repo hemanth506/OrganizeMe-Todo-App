@@ -9,6 +9,7 @@ export const SideNav = () => {
   const [categoryList, setCategoryList] = useContext(CategoryDataContext);
   localStorage.setItem("categoryData", JSON.stringify(categoryList));
   const [categoryName, setCategoryName] = useState("");
+  // comment
 
   const addCategory = useCallback(() => {
     if (categoryName) {
