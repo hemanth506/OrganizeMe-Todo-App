@@ -144,7 +144,7 @@ export const MainContent = () => {
       });
       setDeleteTodoId(null);
     }
-  }, [deleteTodoId]);
+  }, [deleteTodoId, categoryID, subCategoryID, setCategoryData]);
 
   // deleteNoteId
   useEffect(() => {
@@ -168,7 +168,7 @@ export const MainContent = () => {
         return newCategoryData;
       });
     }
-  }, [deleteNoteId]);
+  }, [deleteNoteId, categoryID, subCategoryID, setCategoryData]);
 
   // deleteLinkId
   useEffect(() => {
@@ -192,7 +192,7 @@ export const MainContent = () => {
         return newCategoryData;
       });
     }
-  }, [deleteLinkId]);
+  }, [deleteLinkId, categoryID, subCategoryID, setCategoryData]);
 
   // checkedTodoId
   useEffect(() => {
@@ -223,7 +223,7 @@ export const MainContent = () => {
       });
       setcheckedTodoId(null);
     }
-  }, [checkedTodoId, categoryData]);
+  }, [checkedTodoId, categoryData, categoryID, subCategoryID, setCategoryData]);
 
   // sorting the checked items
   useEffect(() => {
@@ -249,7 +249,7 @@ export const MainContent = () => {
         return newCategoryData;
       });
     }
-  }, [checkedTodoId]);
+  }, [checkedTodoId, categoryID, subCategoryID, setCategoryData]);
 
   const memoizedDisplaySubCategory = useMemo(
     () => displaySubCategory,
