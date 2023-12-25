@@ -99,10 +99,31 @@ export const MainContent = () => {
         );
 
         if (currentSubCategory) {
-          currentSubCategory[tab] = [
-            ...currentSubCategory[tab],
-            updatedContent,
-          ];
+          // Updating the new todo after the unchecked todos and then the checked values.
+          if (tab === "todos") {
+            const trueArrValue = [];
+            const falseArrValue = [];
+            let k = 0;
+            for (; k < currentSubCategory[tab].length; k++) {
+              if (currentSubCategory[tab][k].isCompleted) {
+                break;
+              }
+              trueArrValue.push(currentSubCategory[tab][k]);
+              console.log("======", currentSubCategory[tab][k]);
+            }
+            trueArrValue.push(updatedContent);
+
+            for (let j = k; j < currentSubCategory[tab].length; j++) {
+              falseArrValue.push(currentSubCategory[tab][j]);
+            }
+
+            currentSubCategory[tab] = [...trueArrValue, ...falseArrValue];
+          } else {
+            currentSubCategory[tab] = [
+              ...currentSubCategory[tab],
+              updatedContent,
+            ];
+          }
         }
       }
 
