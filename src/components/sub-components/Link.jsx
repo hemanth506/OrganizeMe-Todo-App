@@ -2,10 +2,19 @@ import React, { useCallback } from "react";
 import { Button } from "@mui/material";
 import { createButton } from "../../styling.js";
 import { ImCross } from "react-icons/im";
+import { DeleteModel } from "./DeleteModel.js";
 
 export const Link = ({ link, setDeleteLinkId }) => {
   const deleteLink = useCallback(() => {
     setDeleteLinkId(link.id);
+  }, [link.id]);
+
+  const triggerDeleteLink = useCallback(() => {
+    DeleteModel(
+      "Are you sure to delete link?",
+      `${link.title}`,
+      deleteLink
+    );
   }, [link.id]);
 
   return (
@@ -17,7 +26,7 @@ export const Link = ({ link, setDeleteLinkId }) => {
       >
         {link.title}
       </a>
-      <Button variant="contained" style={buttonStyle} onClick={deleteLink}>
+      <Button variant="contained" style={buttonStyle} onClick={triggerDeleteLink}>
         <ImCross style={{ color: "red" }} />
       </Button>
     </div>

@@ -10,6 +10,7 @@ import { MdDelete } from "react-icons/md";
 import { GrAdd } from "react-icons/gr";
 import { SubCategory } from "./SubCategory";
 import { CategoryDataContext } from "./FileContainer";
+import { DeleteModel } from "./sub-components/DeleteModel";
 
 export const Category = ({ category }) => {
   const [categoryData, setCategoryData] = useContext(CategoryDataContext);
@@ -57,13 +58,21 @@ export const Category = ({ category }) => {
     setCategoryData(updatedCategoryData);
   }, [categoryData]);
 
+  const triggerDeleteModel = useCallback(() => {
+    DeleteModel(
+      "Do you want to delete these category?",
+      "Please be aware that all the sub-categories will also be deleted!!",
+      handleDeleteCategory
+    );
+  }, []);
+
   return (
     <Box sx={boxStyle}>
       <div style={titleDivStyle}>
         <span style={spanStyle}>{category.title}</span>
         <MdDelete
           style={deleteIconStyle}
-          onClick={handleDeleteCategory}
+          onClick={triggerDeleteModel}
           value={category.title}
         />
       </div>

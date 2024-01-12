@@ -2,17 +2,26 @@ import React, { useCallback } from "react";
 import { Button } from "@mui/material";
 import { createButton } from "../../styling.js";
 import { ImCross } from "react-icons/im";
+import { DeleteModel } from "./DeleteModel.js";
 
 export const Note = ({ note, setDeleteNoteId }) => {
   const deleteNote = useCallback(() => {
     setDeleteNoteId(note.id);
   }, [note.id]);
 
+  const triggerDeleteNote = useCallback(() => {
+    DeleteModel(
+      "Are you sure to delete note?",
+      `${note.title}`,
+      deleteNote
+    );
+  }, [note.id]);
+
   return (
     <div style={divStyle}>
       <div style={innerDivStyle}>
         <span style={{ fontWeight: 700 }}>{note.title}</span>
-        <Button variant="contained" style={buttonStyle} onClick={deleteNote}>
+        <Button variant="contained" style={buttonStyle} onClick={triggerDeleteNote}>
           <ImCross style={{ color: "red" }} />
         </Button>
       </div>

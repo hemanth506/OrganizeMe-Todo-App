@@ -3,6 +3,7 @@ import { CategoryDataContext, CategoryContext } from "./FileContainer";
 import { Button } from "@mui/material";
 import { createButton } from "../styling";
 import { ImCross } from "react-icons/im";
+import { DeleteModel } from "./sub-components/DeleteModel";
 
 export const SubCategory = ({ subCategory, categoryID }) => {
   const [categoryData, setCategoryData] = useContext(CategoryDataContext);
@@ -13,7 +14,7 @@ export const SubCategory = ({ subCategory, categoryID }) => {
   }, [categoryID, subCategory]);
 
   const handleDeleteSubCategory = useCallback((e) => {
-    e.stopPropagation();
+    
     const currentCategoryData = categoryData.filter(
       (tempCatogery) => tempCatogery.id === categoryID
     );
@@ -39,13 +40,22 @@ export const SubCategory = ({ subCategory, categoryID }) => {
     }
   }, [categoryData, categoryID]);
 
+  const triggerDeleteModel = useCallback((e) => {
+    e.stopPropagation();
+    DeleteModel(
+      "Do you want to delete this sub-category?",
+      "Please be aware that all the todos, notes, and links will also be deleted!!",
+      handleDeleteSubCategory
+    );
+  }, []);
+
   return (
     <div style={divStyle} onClick={handleActiveCategory}>
       <span style={spanStyle}>{subCategory.title}</span>
       <Button
         variant="contained"
         style={iconStyle}
-        onClick={handleDeleteSubCategory}
+        onClick={triggerDeleteModel}
       >
         <ImCross style={{ color: "white" }} />
       </Button>

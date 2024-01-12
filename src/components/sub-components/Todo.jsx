@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { Checkbox, Button, Switch } from "@mui/material";
 import { createButton } from "../../styling.js";
 import { ImCross } from "react-icons/im";
+import { DeleteModel } from "./DeleteModel.js";
 
 export const Todo = ({ todo, setDeleteTodoId, setcheckedTodoId }) => {
   const [isChecked, setIsChecked] = useState(todo.isCompleted);
@@ -13,6 +14,14 @@ export const Todo = ({ todo, setDeleteTodoId, setcheckedTodoId }) => {
 
   const deleteTodo = useCallback(() => {
     setDeleteTodoId(todo.id);
+  }, [todo.id]);
+
+  const triggerDeleteTodo = useCallback(() => {
+    DeleteModel(
+      "Are you sure to delete todo?",
+      `${todo.title}`,
+      deleteTodo
+    );
   }, [todo.id]);
 
   return (
@@ -28,7 +37,11 @@ export const Todo = ({ todo, setDeleteTodoId, setcheckedTodoId }) => {
         <span style={{ textDecoration: isChecked ? "line-through" : null }}>
           {todo.title}
         </span>
-        <Button variant="contained" style={buttonStyle} onClick={deleteTodo}>
+        <Button
+          variant="contained"
+          style={buttonStyle}
+          onClick={triggerDeleteTodo}
+        >
           <ImCross style={{ color: "red" }} />
         </Button>
       </div>
