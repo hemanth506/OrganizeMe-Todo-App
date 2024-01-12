@@ -426,7 +426,7 @@ const notesLinksFooter = {
 
 const headingSpanStyle = { fontSize: "30px", fontWeight: 600 };
 
-const boxStyle = { width: "100%", height: "100%" };
+const boxStyle = { width: "100%", height: "100%", display:"flex", flexDirection: "column" };
 
 const footerStyle = {
   display: "flex",
@@ -458,7 +458,7 @@ const mainStyle = {
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
-  height: "78.7%",
+  height: "100%",
   flexGrow: 1,
 };
 
