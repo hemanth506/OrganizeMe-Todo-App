@@ -3,7 +3,6 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import { SideNav } from "./SideNav";
 import { MainContent } from "./MainContent";
-import { defaultData } from "../data";
 
 export const CategoryDataContext = createContext();
 export const CategoryContext = createContext();

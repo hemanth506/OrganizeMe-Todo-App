@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Checkbox, Button, Switch } from "@mui/material";
+import { Checkbox, Button } from "@mui/material";
 import { createButton } from "../../styling.js";
 import { ImCross } from "react-icons/im";
 import { DeleteModel } from "./DeleteModel.js";

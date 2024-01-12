@@ -49,6 +49,5 @@ const divStyle = {
   borderRadius: "8px",
   backgroundColor: "MintCream",
   margin: "3px 3px 3px 10px",
-  padding: "5px 12px",
-  display: "flex",
+  padding: "5px 12px"
 };
