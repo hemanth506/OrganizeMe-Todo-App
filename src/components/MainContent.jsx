@@ -352,6 +352,7 @@ export const MainContent = () => {
           ) : null}
         </section>
 
+      </main>
         <footer style={footerStyle}>
           {/* Input for todos */}
           {dataExist && tab === "todos" && (
@@ -411,7 +412,6 @@ export const MainContent = () => {
             </Button>
           )}
         </footer>
-      </main>
     </Box>
   );
 };
@@ -432,6 +432,7 @@ const footerStyle = {
   display: "flex",
   gap: "6px",
   margin: "2vh 1vw",
+
 };
 
 const todoDivStyle = {
@@ -460,6 +461,7 @@ const mainStyle = {
   justifyContent: "space-between",
   height: "100%",
   flexGrow: 1,
+  overflowY: "auto",
 };
 
 const todoFooter = {
