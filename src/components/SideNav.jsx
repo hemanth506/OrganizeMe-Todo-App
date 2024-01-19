@@ -3,18 +3,19 @@ import { Box, Button } from "@mui/material";
 import { FaCheck } from "react-icons/fa6";
 import { createButton } from "../styling.js";
 import { Category } from "./Category.jsx";
-import { useSelector, useDispatch } from "react-redux";
-import { addCategory, updateLocalState } from "../redux/slice/CategorySlice.js";
+import { CategoryDataContext } from "./FileContainer";
 
 export const SideNav = () => {
+  const [categoryList, setCategoryList] = useContext(CategoryDataContext);
+  localStorage.setItem("categoryData", JSON.stringify(categoryList));
   const [categoryName, setCategoryName] = useState("");
-  const dispatch = useDispatch();
-  const categoryList = useSelector((state) => state.category);
 
-  const addCategoryData = useCallback(() => {
+  const addCategory = useCallback(() => {
     if (categoryName) {
-      dispatch(addCategory({ categoryName }));
-      dispatch(updateLocalState());
+      setCategoryList([
+        ...categoryList,
+        { id: Date.now(), title: categoryName, subCategory: [] },
+      ]);
       setCategoryName("");
     }
   }, [categoryName, categoryList]);
@@ -26,11 +27,7 @@ export const SideNav = () => {
           {categoryList.length > 0 ? (
             <div>
               {categoryList.map((category) => (
-                <Category
-                  key={category.id}
-                  category={category}
-                  categoryId={category.id}
-                />
+                <Category key={category.id} category={category} />
               ))}
             </div>
           ) : (
@@ -49,7 +46,7 @@ export const SideNav = () => {
         <Button
           variant="contained"
           style={createButton(12, "17px", "50px", "lightgreen")}
-          onClick={addCategoryData}
+          onClick={addCategory}
         >
           <FaCheck style={{ color: "green" }} />
         </Button>

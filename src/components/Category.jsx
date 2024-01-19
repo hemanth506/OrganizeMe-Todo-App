@@ -1,18 +1,19 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import { Box } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 import { GrAdd } from "react-icons/gr";
 import { SubCategory } from "./SubCategory";
+import { CategoryDataContext } from "./FileContainer";
 import { DeleteModel } from "./sub-components/DeleteModel";
-import { useDispatch } from "react-redux";
-import {
-  addSubCategory,
-  deleteCategory,
-  updateLocalState,
-} from "../redux/slice/CategorySlice";
 
-export const Category = ({ category, categoryId }) => {
-  const dispatch = useDispatch();
+export const Category = ({ category }) => {
+  const [categoryData, setCategoryData] = useContext(CategoryDataContext);
   const inputRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
   const [inputSyle, setInputStyle] = useState(disabledInputStyle);
@@ -36,8 +37,14 @@ export const Category = ({ category, categoryId }) => {
   const onKeyDownEvent = useCallback(
     (event) => {
       if (event.key === "Enter") {
-        dispatch(addSubCategory({ subCategoryName, categoryId }));
-        dispatch(updateLocalState());
+        const subObj = {
+          id: Date.now().toString(),
+          title: subCategoryName,
+          todos: [],
+          links: [],
+          notes: [],
+        };
+        category.subCategory = [...category.subCategory, subObj];
         setSubCategoryName("");
       }
     },
@@ -45,9 +52,11 @@ export const Category = ({ category, categoryId }) => {
   );
 
   const handleDeleteCategory = useCallback(() => {
-    dispatch(deleteCategory({ id: category.id }));
-    dispatch(updateLocalState());
-  }, []);
+    const updatedCategoryData = categoryData.filter(
+      (tempCatogery) => tempCatogery.id !== category.id
+    );
+    setCategoryData(updatedCategoryData);
+  }, [categoryData]);
 
   const triggerDeleteModel = useCallback(() => {
     DeleteModel(
