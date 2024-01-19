@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from "react";
-import { CategoryDataContext, CategoryContext } from "./FileContainer";
+import { CategoryContext } from "./FileContainer";
 import { Button } from "@mui/material";
 import { createButton } from "../styling";
 import { ImCross } from "react-icons/im";
@@ -11,7 +11,6 @@ import {
 } from "../redux/slice/CategorySlice";
 
 export const SubCategory = ({ subCategory, categoryID }) => {
-  // const [categoryData, setCategoryData] = useContext(CategoryDataContext);
   const dispatch = useDispatch();
   const [, setActiveCategory] = useContext(CategoryContext);
 
