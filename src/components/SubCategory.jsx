@@ -4,45 +4,24 @@ import { Button } from "@mui/material";
 import { createButton } from "../styling";
 import { ImCross } from "react-icons/im";
 import { DeleteModel } from "./sub-components/DeleteModel";
+import { useDispatch } from "react-redux";
+import {
+  deleteSubCategory,
+  updateLocalState,
+} from "../redux/slice/CategorySlice";
 
 export const SubCategory = ({ subCategory, categoryID }) => {
-<<<<<<< HEAD
   const dispatch = useDispatch();
-=======
-  const [categoryData, setCategoryData] = useContext(CategoryDataContext);
->>>>>>> c38d3c3c681e27adffa868ea0e4691c980c4ce6c
   const [, setActiveCategory] = useContext(CategoryContext);
 
   const handleActiveCategory = useCallback(() => {
     setActiveCategory([categoryID, subCategory.id]);
   }, [categoryID, subCategory]);
 
-  const handleDeleteSubCategory = useCallback((e) => {
-    
-    const currentCategoryData = categoryData.filter(
-      (tempCatogery) => tempCatogery.id === categoryID
-    );
-
-    if (currentCategoryData.length > 0) {
-      const updatedSubCategory = currentCategoryData[0].subCategory.filter(
-        (tempSubCategory) => tempSubCategory.id !== subCategory.id
-      );
-
-      const updatedCategory = [];
-      categoryData.forEach((element) => {
-        if (currentCategoryData[0].id === element.id) {
-          updatedCategory.push({
-            ...element,
-            subCategory: updatedSubCategory,
-          });
-        } else {
-          updatedCategory.push(element);
-        }
-      });
-
-      setCategoryData(updatedCategory);
-    }
-  }, [categoryData, categoryID]);
+  const handleDeleteSubCategory = useCallback(() => {
+    dispatch(deleteSubCategory({ subCategoryId: subCategory.id, categoryID }));
+    dispatch(updateLocalState());
+  }, [categoryID]);
 
   const triggerDeleteModel = useCallback((e) => {
     e.stopPropagation();
@@ -84,4 +63,4 @@ const divStyle = {
 const iconStyle = {
   ...createButton(9, "8px", "25px", "OrangeRed"),
   height: "10px",
-}
+};
