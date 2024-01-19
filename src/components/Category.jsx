@@ -1,19 +1,18 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-  useCallback,
-} from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Box } from "@mui/material";
 import { MdDelete } from "react-icons/md";
 import { GrAdd } from "react-icons/gr";
 import { SubCategory } from "./SubCategory";
-import { CategoryDataContext } from "./FileContainer";
 import { DeleteModel } from "./sub-components/DeleteModel";
+import { useDispatch } from "react-redux";
+import {
+  addSubCategory,
+  deleteCategory,
+  updateLocalState,
+} from "../redux/slice/CategorySlice";
 
-export const Category = ({ category }) => {
-  const [categoryData, setCategoryData] = useContext(CategoryDataContext);
+export const Category = ({ category, categoryId }) => {
+  const dispatch = useDispatch();
   const inputRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
   const [inputSyle, setInputStyle] = useState(disabledInputStyle);
@@ -37,14 +36,8 @@ export const Category = ({ category }) => {
   const onKeyDownEvent = useCallback(
     (event) => {
       if (event.key === "Enter") {
-        const subObj = {
-          id: Date.now().toString(),
-          title: subCategoryName,
-          todos: [],
-          links: [],
-          notes: [],
-        };
-        category.subCategory = [...category.subCategory, subObj];
+        dispatch(addSubCategory({ subCategoryName, categoryId }));
+        dispatch(updateLocalState());
         setSubCategoryName("");
       }
     },
@@ -52,11 +45,9 @@ export const Category = ({ category }) => {
   );
 
   const handleDeleteCategory = useCallback(() => {
-    const updatedCategoryData = categoryData.filter(
-      (tempCatogery) => tempCatogery.id !== category.id
-    );
-    setCategoryData(updatedCategoryData);
-  }, [categoryData]);
+    dispatch(deleteCategory({ id: category.id }));
+    dispatch(updateLocalState());
+  }, []);
 
   const triggerDeleteModel = useCallback(() => {
     DeleteModel(
