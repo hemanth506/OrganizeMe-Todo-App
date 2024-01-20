@@ -5,7 +5,7 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import { CategoryDataContext, CategoryContext } from "./FileContainer";
+import { CategoryContext } from "./FileContainer";
 import { createButton } from "../styling.js";
 import { Box, Button, Tabs, Tab } from "@mui/material";
 import { FaPlus } from "react-icons/fa6";
@@ -13,10 +13,21 @@ import { Todo } from "./sub-components/Todo.jsx";
 import { Note } from "./sub-components/Note.jsx";
 import { Link } from "./sub-components/Link.jsx";
 import { NoContent } from "./sub-components/NoContent.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addContentBasedOnTab,
+  checkTodo,
+  deleteLink,
+  deleteNote,
+  deleteTodo,
+  sortTodo,
+  updateLocalState,
+} from "../redux/slice/CategorySlice.js";
 
 export const MainContent = () => {
-  const [categoryData, setCategoryData] = useContext(CategoryDataContext);
-  localStorage.setItem("categoryData", JSON.stringify(categoryData));
+  const dispatch = useDispatch();
+  const categoryData = useSelector((state) => state.category);
+
   const [activeCategory] = useContext(CategoryContext);
   const [categoryID, subCategoryID] = activeCategory;
   const [displaySubCategory, setDisplaySubCategory] = useState({});
@@ -32,18 +43,18 @@ export const MainContent = () => {
 
   // Sets the title and the subCategory data
   useEffect(() => {
+    console.log(categoryID, subCategoryID);
     if (categoryID && subCategoryID) {
-      const currentCat = categoryData.filter(
+      const currentCat = categoryData.find(
         (category) => category.id === categoryID
       );
-      if (currentCat.length > 0) {
-        const currentSubCat = currentCat[0].subCategory.filter(
+      if (currentCat) {
+        const currentSubCat = currentCat.subCategory.find(
           (subCat) => subCat.id === subCategoryID
         );
-
-        if (currentSubCat && currentSubCat.length > 0) {
-          setCurrentCategoryTitle(currentCat[0].title);
-          setDisplaySubCategory(currentSubCat[0]);
+        if (currentSubCat) {
+          setCurrentCategoryTitle(currentCat.title);
+          setDisplaySubCategory(currentSubCat);
         }
       }
     }
@@ -71,209 +82,67 @@ export const MainContent = () => {
 
   // Add the content based on the tab selected
   const handleAddEvent = useCallback(() => {
-    const defaultContent = {
-      id: Date.now().toString(),
-      title: mainContent,
-    };
-
-    let updatedContent;
-    if (tab === "todos") {
-      updatedContent = { ...defaultContent, isCompleted: false };
-    } else if (tab === "notes" || tab === "links") {
-      if (subContent === "") {
-        return;
-      }
-      if (tab === "notes") {
-        updatedContent = { ...defaultContent, description: subContent };
-      } else if (tab === "links") {
-        updatedContent = { ...defaultContent, contentURL: subContent };
-      }
-    }
-
-    setCategoryData((prevCategoryData) => {
-      const newCategoryData = [...prevCategoryData];
-      const currentCategory = newCategoryData.find(
-        (category) => category.id === categoryID
-      );
-
-      if (currentCategory) {
-        const currentSubCategory = currentCategory.subCategory.find(
-          (subCat) => subCat.id === subCategoryID
-        );
-
-        if (currentSubCategory) {
-          // Updating the new todo after the unchecked todos and then the checked values.
-          if (tab === "todos") {
-            const trueArrValue = [];
-            const falseArrValue = [];
-            let k = 0;
-            for (; k < currentSubCategory[tab].length; k++) {
-              if (currentSubCategory[tab][k].isCompleted) {
-                break;
-              }
-              trueArrValue.push(currentSubCategory[tab][k]);
-            }
-            trueArrValue.push(updatedContent);
-
-            for (let j = k; j < currentSubCategory[tab].length; j++) {
-              falseArrValue.push(currentSubCategory[tab][j]);
-            }
-
-            currentSubCategory[tab] = [...trueArrValue, ...falseArrValue];
-          } else {
-            currentSubCategory[tab] = [
-              ...currentSubCategory[tab],
-              updatedContent,
-            ];
-          }
-        }
-      }
-
-      return newCategoryData;
-    });
+    dispatch(
+      addContentBasedOnTab({
+        mainContent,
+        tab,
+        subContent,
+        categoryID,
+        subCategoryID,
+      })
+    );
+    dispatch(updateLocalState());
 
     setMainContent("");
     setSubContent("");
-  }, [
-    mainContent,
-    subContent,
-    tab,
-    categoryID,
-    subCategoryID,
-    setCategoryData,
-  ]);
+  }, [mainContent, subContent, tab, categoryID, subCategoryID]);
 
   // deleteTodoId
   useEffect(() => {
     if (deleteTodoId) {
-      setCategoryData((prevCategoryData) => {
-        const newCategoryData = prevCategoryData.map((category) => {
-          if (category.id === categoryID) {
-            const newSubCategory = category.subCategory.map((subCat) => {
-              if (subCat.id === subCategoryID) {
-                subCat.todos = subCat.todos.filter(
-                  (tempTodo) => tempTodo.id !== deleteTodoId
-                );
-              }
-              return subCat;
-            });
-
-            return { ...category, subCategory: newSubCategory };
-          }
-          return category;
-        });
-
-        return newCategoryData;
-      });
+      dispatch(deleteTodo({ subCategoryID, categoryID, deleteTodoId }));
+      dispatch(updateLocalState());
       setDeleteTodoId(null);
     }
-  }, [deleteTodoId, categoryID, subCategoryID, setCategoryData]);
+  }, [deleteTodoId, categoryID, subCategoryID]);
 
   // deleteNoteId
   useEffect(() => {
     if (deleteNoteId) {
-      setCategoryData((prevCategoryData) => {
-        const newCategoryData = prevCategoryData.map((category) => {
-          if (category.id === categoryID) {
-            const newSubCategory = category.subCategory.map((subCat) => {
-              if (subCat.id === subCategoryID) {
-                subCat.notes = subCat.notes.filter(
-                  (tempNote) => tempNote.id !== deleteNoteId
-                );
-              }
-              return subCat;
-            });
-            return { ...category, subCategory: newSubCategory };
-          }
-          return category;
-        });
-
-        return newCategoryData;
-      });
+      dispatch(deleteNote({ subCategoryID, categoryID, deleteNoteId }));
+      dispatch(updateLocalState());
+      setDeleteNoteId(null);
     }
-  }, [deleteNoteId, categoryID, subCategoryID, setCategoryData]);
+  }, [deleteNoteId, categoryID, subCategoryID]);
 
   // deleteLinkId
   useEffect(() => {
     if (deleteLinkId) {
-      setCategoryData((prevCategoryData) => {
-        const newCategoryData = prevCategoryData.map((category) => {
-          if (category.id === categoryID) {
-            const newSubCategory = category.subCategory.map((subCat) => {
-              if (subCat.id === subCategoryID) {
-                subCat.links = subCat.links.filter(
-                  (tempLink) => tempLink.id !== deleteLinkId
-                );
-              }
-              return subCat;
-            });
-            return { ...category, subCategory: newSubCategory };
-          }
-          return category;
-        });
-
-        return newCategoryData;
-      });
+      dispatch(deleteLink({ subCategoryID, categoryID, deleteLinkId }));
+      dispatch(updateLocalState());
+      setDeleteLinkId(null);
     }
-  }, [deleteLinkId, categoryID, subCategoryID, setCategoryData]);
+  }, [deleteLinkId, categoryID, subCategoryID]);
 
   // checkedTodoId
   useEffect(() => {
     if (checkedTodoId) {
-      setCategoryData((prevCategoryData) => {
-        const newCategoryData = prevCategoryData.map((category) => {
-          if (category.id === categoryID) {
-            const newSubCategory = category.subCategory.map((subCat) => {
-              if (subCat.id === subCategoryID) {
-                const newTodos = subCat.todos.map((tempTodo) => {
-                  if (tempTodo.id === checkedTodoId) {
-                    tempTodo.isCompleted = !tempTodo.isCompleted;
-                  }
-                  return tempTodo;
-                });
-                return { ...subCat, todos: newTodos };
-              }
-              return subCat;
-            });
-
-            return { ...category, subCategory: newSubCategory };
-          }
-          return category;
-        });
-
-        return newCategoryData;
-      });
+      dispatch(checkTodo({ subCategoryID, categoryID, checkedTodoId }));
+      dispatch(updateLocalState());
       setcheckedTodoId(null);
     }
-  }, [checkedTodoId, categoryData, categoryID, subCategoryID, setCategoryData]);
+  }, [checkedTodoId, categoryID, subCategoryID]);
 
   // sorting the checked items
   useEffect(() => {
     if (checkedTodoId) {
-      setCategoryData((prevCategoryData) => {
-        const newCategoryData = prevCategoryData.map((category) => {
-          if (category.id === categoryID) {
-            const newSubCategory = category.subCategory.map((subCat) => {
-              if (subCat.id === subCategoryID) {
-                const sortedSubCategory = [...subCat.todos].sort((a, b) =>
-                  a.isCompleted === b.isCompleted ? 0 : a.isCompleted ? 1 : -1
-                );
-                return { ...subCat, todos: sortedSubCategory };
-              }
-              return subCat;
-            });
-
-            return { ...category, subCategory: newSubCategory };
-          }
-          return category;
-        });
-
-        return newCategoryData;
-      });
+      dispatch(sortTodo({ subCategoryID, categoryID }));
+      dispatch(updateLocalState());
+      setcheckedTodoId(null);
     }
-  }, [checkedTodoId, categoryID, subCategoryID, setCategoryData]);
+  }, [checkedTodoId, categoryID, subCategoryID]);
 
-  /* This memoize the subCategory which to be displayed and this will re-calculate only when the subCategory is changed */ 
+  /* This memoize the subCategory which to be displayed and this will re-calculate only when the subCategory is changed */
   const memoizedDisplaySubCategory = useMemo(
     () => displaySubCategory,
     [displaySubCategory]
@@ -307,7 +176,6 @@ export const MainContent = () => {
 
       <main style={mainStyle}>
         <section style={{ overflow: "auto" }}>
-
           {/* Renders no content */}
           {!dataExist && <NoContent />}
 
@@ -351,67 +219,66 @@ export const MainContent = () => {
             </div>
           ) : null}
         </section>
-
       </main>
-        <footer style={footerStyle}>
-          {/* Input for todos */}
-          {dataExist && tab === "todos" && (
+      <footer style={footerStyle}>
+        {/* Input for todos */}
+        {dataExist && tab === "todos" && (
+          <input
+            placeholder="Add new Todo"
+            style={todoFooter}
+            value={mainContent}
+            onChange={(e) => setMainContent(e.target.value)}
+          />
+        )}
+
+        {/* Input for notes */}
+        {dataExist && tab === "notes" && (
+          <div style={notesLinksFooter}>
             <input
-              placeholder="Add new Todo"
-              style={todoFooter}
+              placeholder="Add note title"
+              style={inputFooter}
               value={mainContent}
               onChange={(e) => setMainContent(e.target.value)}
             />
-          )}
+            <textarea
+              placeholder="Add note content"
+              style={noteTextAreaFooter}
+              value={subContent}
+              onChange={(e) => setSubContent(e.target.value)}
+            />
+          </div>
+        )}
 
-          {/* Input for notes */}
-          {dataExist && tab === "notes" && (
-            <div style={notesLinksFooter}>
-              <input
-                placeholder="Add note title"
-                style={inputFooter}
-                value={mainContent}
-                onChange={(e) => setMainContent(e.target.value)}
-              />
-              <textarea
-                placeholder="Add note content"
-                style={noteTextAreaFooter}
-                value={subContent}
-                onChange={(e) => setSubContent(e.target.value)}
-              />
-            </div>
-          )}
+        {/* Input for links */}
+        {dataExist && tab === "links" && (
+          <div style={notesLinksFooter}>
+            <input
+              placeholder="Enter link title"
+              style={inputFooter}
+              value={mainContent}
+              onChange={(e) => setMainContent(e.target.value)}
+            />
+            <input
+              placeholder="Enter link. Eg: www.example.com"
+              style={inputFooter}
+              type="url"
+              value={subContent}
+              onChange={(e) => setSubContent(e.target.value)}
+            />
+          </div>
+        )}
 
-          {/* Input for links */}
-          {dataExist && tab === "links" && (
-            <div style={notesLinksFooter}>
-              <input
-                placeholder="Enter link title"
-                style={inputFooter}
-                value={mainContent}
-                onChange={(e) => setMainContent(e.target.value)}
-              />
-              <input
-                placeholder="Enter link. Eg: www.example.com"
-                style={inputFooter}
-                type="url"
-                value={subContent}
-                onChange={(e) => setSubContent(e.target.value)}
-              />
-            </div>
-          )}
-
-          {/* Buttons */}
-          {dataExist && (
-            <Button
-              variant="contained"
-              style={createButton(12, "17px", "50px", "skyblue")}
-              onClick={handleAddEvent}
-            >
-              <FaPlus style={{ color: "blue" }} />
-            </Button>
-          )}
-        </footer>
+        {/* Buttons */}
+        {dataExist && (
+          <Button
+            variant="contained"
+            style={createButton(12, "17px", "50px", "skyblue")}
+            onClick={handleAddEvent}
+          >
+            <FaPlus style={{ color: "blue" }} />
+          </Button>
+        )}
+      </footer>
     </Box>
   );
 };
@@ -426,13 +293,17 @@ const notesLinksFooter = {
 
 const headingSpanStyle = { fontSize: "30px", fontWeight: 600 };
 
-const boxStyle = { width: "100%", height: "100%", display:"flex", flexDirection: "column" };
+const boxStyle = {
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+};
 
 const footerStyle = {
   display: "flex",
   gap: "6px",
   margin: "2vh 1vw",
-
 };
 
 const todoDivStyle = {
@@ -453,7 +324,7 @@ const notesDivStyle = {
   display: "grid",
   gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
   gap: "10px",
-  paddingRight:"40px",
+  paddingRight: "40px",
 };
 
 const mainStyle = {
