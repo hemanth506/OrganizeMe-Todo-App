@@ -5,7 +5,7 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import { CategoryContext } from "./FileContainer";
+import { CategoryContext } from "../pages/Home.jsx";
 import { createButton } from "../styling.js";
 import { Box, Button, Tabs, Tab } from "@mui/material";
 import { FaPlus } from "react-icons/fa6";
@@ -14,6 +14,7 @@ import { Note } from "./sub-components/Note.jsx";
 import { Link } from "./sub-components/Link.jsx";
 import { NoContent } from "./sub-components/NoContent.jsx";
 import { useDispatch, useSelector } from "react-redux";
+import { setProfile } from "../redux/slice/ProfileSlice.js";
 import {
   addContentBasedOnTab,
   checkTodo,
@@ -23,11 +24,15 @@ import {
   sortTodo,
   updateLocalState,
 } from "../redux/slice/CategorySlice.js";
+import { googleLogout } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
+import { DeleteModel } from "./sub-components/DeleteModel.js";
 
 export const MainContent = () => {
   const dispatch = useDispatch();
   const categoryData = useSelector((state) => state.category);
-
+  const userProfile = useSelector((state) => state.profile);
+  const navigate = useNavigate();
   const [activeCategory] = useContext(CategoryContext);
   const [categoryID, subCategoryID] = activeCategory;
   const [displaySubCategory, setDisplaySubCategory] = useState({});
@@ -43,7 +48,7 @@ export const MainContent = () => {
 
   // Sets the title and the subCategory data
   useEffect(() => {
-    console.log(categoryID, subCategoryID);
+    // console.log(categoryID, subCategoryID);
     if (categoryID && subCategoryID) {
       const currentCat = categoryData.find(
         (category) => category.id === categoryID
@@ -148,138 +153,199 @@ export const MainContent = () => {
     [displaySubCategory]
   );
 
+  const logOut = useCallback(() => {
+    googleLogout();
+    dispatch(setProfile(null));
+    navigate("/");
+  }, [userProfile]);
+
+  const triggerLogout = useCallback(() => {
+    DeleteModel(
+      `Your request is to logout from ${userProfile.email}, Can I proceed on it?`,
+      "",
+      logOut
+    );
+  }, [userProfile]);
+
+  const capitalizeUserName = (str) =>
+    str.charAt(0).toUpperCase() + str.slice(1);
+
   return (
-    <Box sx={boxStyle}>
-      {/* Headers - Title */}
-      <header style={divStyle}>
-        {dataExist && memoizedDisplaySubCategory ? (
-          <span style={headingSpanStyle}>
-            {memoizedDisplaySubCategory.title}
-          </span>
-        ) : (
-          <span></span>
-        )}
-
-        {dataExist && currentCategoryTitle ? (
-          <span>{currentCategoryTitle}</span>
-        ) : (
-          <span></span>
-        )}
-      </header>
-
-      {/* Tob view */}
-      <Tabs value={tab} onChange={(event, value) => setTab(value)}>
-        <Tab value="todos" label="Todos" sx={tabHeadingStyle} />
-        <Tab value="notes" label="Notes" sx={tabHeadingStyle} />
-        <Tab value="links" label="Links" sx={tabHeadingStyle} />
-      </Tabs>
-
-      <main style={mainStyle}>
-        <section style={{ overflow: "auto" }}>
-          {/* Renders no content */}
-          {!dataExist && <NoContent />}
-
-          {/* Renders todos data */}
-          {dataExist && tab === "todos" && memoizedDisplaySubCategory[tab] ? (
-            <div style={todoDivStyle}>
-              {memoizedDisplaySubCategory[tab].map((todo) => (
-                <Todo
-                  key={todo.id}
-                  todo={todo}
-                  setDeleteTodoId={setDeleteTodoId}
-                  setcheckedTodoId={setcheckedTodoId}
-                />
-              ))}
-            </div>
-          ) : null}
-
-          {/* Renders notes data */}
-          {dataExist && tab === "notes" && memoizedDisplaySubCategory[tab] ? (
-            <div style={notesDivStyle}>
-              {memoizedDisplaySubCategory[tab].map((note) => (
-                <Note
-                  key={note.id}
-                  note={note}
-                  setDeleteNoteId={setDeleteNoteId}
-                />
-              ))}
-            </div>
-          ) : null}
-
-          {/* Renders links data */}
-          {dataExist && tab === "links" && memoizedDisplaySubCategory[tab] ? (
-            <div style={linksDivStyle}>
-              {memoizedDisplaySubCategory[tab].map((link) => (
-                <Link
-                  key={link.id}
-                  link={link}
-                  setDeleteLinkId={setDeleteLinkId}
-                />
-              ))}
-            </div>
-          ) : null}
-        </section>
-      </main>
-      <footer style={footerStyle}>
-        {/* Input for todos */}
-        {dataExist && tab === "todos" && (
-          <input
-            placeholder="Add new Todo"
-            style={todoFooter}
-            value={mainContent}
-            onChange={(e) => setMainContent(e.target.value)}
-          />
-        )}
-
-        {/* Input for notes */}
-        {dataExist && tab === "notes" && (
-          <div style={notesLinksFooter}>
-            <input
-              placeholder="Add note title"
-              style={inputFooter}
-              value={mainContent}
-              onChange={(e) => setMainContent(e.target.value)}
-            />
-            <textarea
-              placeholder="Add note content"
-              style={noteTextAreaFooter}
-              value={subContent}
-              onChange={(e) => setSubContent(e.target.value)}
-            />
-          </div>
-        )}
-
-        {/* Input for links */}
-        {dataExist && tab === "links" && (
-          <div style={notesLinksFooter}>
-            <input
-              placeholder="Enter link title"
-              style={inputFooter}
-              value={mainContent}
-              onChange={(e) => setMainContent(e.target.value)}
-            />
-            <input
-              placeholder="Enter link. Eg: www.example.com"
-              style={inputFooter}
-              type="url"
-              value={subContent}
-              onChange={(e) => setSubContent(e.target.value)}
-            />
-          </div>
-        )}
-
-        {/* Buttons */}
-        {dataExist && (
-          <Button
-            variant="contained"
-            style={createButton(12, "17px", "50px", "skyblue")}
-            onClick={handleAddEvent}
+    <div style={boxStyle}>
+      {userProfile && (
+        <Box sx={boxStyle}>
+          {/* Headers - Title */}
+          <header
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
           >
-            <FaPlus style={{ color: "blue" }} />
-          </Button>
-        )}
-      </footer>
-    </Box>
+            <div style={divStyle}>
+              {dataExist && memoizedDisplaySubCategory ? (
+                <span style={headingSpanStyle}>
+                  {memoizedDisplaySubCategory.title}
+                </span>
+              ) : (
+                <span></span>
+              )}
+
+              {dataExist && currentCategoryTitle ? (
+                <span>{currentCategoryTitle}</span>
+              ) : (
+                <span></span>
+              )}
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "fit-content",
+                gap: "10px",
+              }}
+            >
+              <img
+                src={userProfile.picture}
+                alt="user image"
+                className="profileImg"
+                style={{
+                  width: "25%",
+                  height: "fit-content",
+                  borderRadius: "50%",
+                }}
+              />
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={{}}>
+                  {capitalizeUserName(userProfile.given_name)}
+                </span>
+                <button onClick={triggerLogout}>Log out</button>
+              </div>
+            </div>
+          </header>
+
+          {/* Tob view */}
+          <Tabs value={tab} onChange={(event, value) => setTab(value)}>
+            <Tab value="todos" label="Todos" sx={tabHeadingStyle} />
+            <Tab value="notes" label="Notes" sx={tabHeadingStyle} />
+            <Tab value="links" label="Links" sx={tabHeadingStyle} />
+          </Tabs>
+
+          <main style={mainStyle}>
+            <section style={{ overflow: "auto" }}>
+              {/* Renders no content */}
+              {!dataExist && <NoContent />}
+
+              {/* Renders todos data */}
+              {dataExist &&
+              tab === "todos" &&
+              memoizedDisplaySubCategory[tab] ? (
+                <div style={todoDivStyle}>
+                  {memoizedDisplaySubCategory[tab].map((todo) => (
+                    <Todo
+                      key={todo.id}
+                      todo={todo}
+                      setDeleteTodoId={setDeleteTodoId}
+                      setcheckedTodoId={setcheckedTodoId}
+                    />
+                  ))}
+                </div>
+              ) : null}
+
+              {/* Renders notes data */}
+              {dataExist &&
+              tab === "notes" &&
+              memoizedDisplaySubCategory[tab] ? (
+                <div style={notesDivStyle}>
+                  {memoizedDisplaySubCategory[tab].map((note) => (
+                    <Note
+                      key={note.id}
+                      note={note}
+                      setDeleteNoteId={setDeleteNoteId}
+                    />
+                  ))}
+                </div>
+              ) : null}
+
+              {/* Renders links data */}
+              {dataExist &&
+              tab === "links" &&
+              memoizedDisplaySubCategory[tab] ? (
+                <div style={linksDivStyle}>
+                  {memoizedDisplaySubCategory[tab].map((link) => (
+                    <Link
+                      key={link.id}
+                      link={link}
+                      setDeleteLinkId={setDeleteLinkId}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </section>
+          </main>
+
+          <footer style={footerStyle}>
+            {/* Input for todos */}
+            {dataExist && tab === "todos" && (
+              <input
+                placeholder="Add new Todo"
+                style={todoFooter}
+                value={mainContent}
+                onChange={(e) => setMainContent(e.target.value)}
+              />
+            )}
+
+            {/* Input for notes */}
+            {dataExist && tab === "notes" && (
+              <div style={notesLinksFooter}>
+                <input
+                  placeholder="Add note title"
+                  style={inputFooter}
+                  value={mainContent}
+                  onChange={(e) => setMainContent(e.target.value)}
+                />
+                <textarea
+                  placeholder="Add note content"
+                  style={noteTextAreaFooter}
+                  value={subContent}
+                  onChange={(e) => setSubContent(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Input for links */}
+            {dataExist && tab === "links" && (
+              <div style={notesLinksFooter}>
+                <input
+                  placeholder="Enter link title"
+                  style={inputFooter}
+                  value={mainContent}
+                  onChange={(e) => setMainContent(e.target.value)}
+                />
+                <input
+                  placeholder="Enter link. Eg: www.example.com"
+                  style={inputFooter}
+                  type="url"
+                  value={subContent}
+                  onChange={(e) => setSubContent(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Buttons */}
+            {dataExist && (
+              <Button
+                variant="contained"
+                style={createButton(12, "17px", "50px", "skyblue")}
+                onClick={handleAddEvent}
+              >
+                <FaPlus style={{ color: "blue" }} />
+              </Button>
+            )}
+          </footer>
+        </Box>
+      )}
+    </div>
   );
 };
 

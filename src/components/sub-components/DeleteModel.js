@@ -2,7 +2,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 import { Modal } from 'antd';
 const { confirm } = Modal;
 
-export const DeleteModel = (title, content = "" , deleteFunction) => {
+export const DeleteModel = (title, content = "", customFunction) => {
   const tempContent = content !== "" ? content : "";
   confirm({
     title: title,
@@ -10,7 +10,7 @@ export const DeleteModel = (title, content = "" , deleteFunction) => {
     content: tempContent,
     onOk() {
       console.log('OK');
-      deleteFunction();
+      customFunction();
     },
     onCancel() {
       console.log('Cancel');

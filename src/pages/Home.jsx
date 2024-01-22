@@ -1,20 +1,30 @@
 import React, { useState, createContext, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { SideNav } from "./SideNav";
-import { MainContent } from "./MainContent";
+import { SideNav } from "../components/SideNav";
+import { MainContent } from "../components/MainContent";
 import { setDefaultState } from "../redux/slice/CategorySlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export const CategoryContext = createContext();
 
-export const FileContainer = () => {
+export const Home = () => {
   const activeCategory = useState([null, null]);
+  const userProfile = useSelector((state) => state.profile);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (userProfile === null) {
+      // setTimeout(() => {
+      // }, 2 * 1000);
+      navigate("/");
+    }
     dispatch(setDefaultState());
   }, []);
+
+  useEffect(() => {}, [userProfile]);
 
   return (
     <CategoryContext.Provider value={activeCategory}>
