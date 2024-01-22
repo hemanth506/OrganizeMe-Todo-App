@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 
+// initialState: { isLoggedIn: false, details: null },
 const authSlice = createSlice({
   name: "auth",
-  initialState: { isLoggedIn: false, details: null },
+  initialState: null,
   reducers: {
     login: (state, action) => {
       // useGoogleLogin({

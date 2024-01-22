@@ -24,3 +24,55 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.login-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 380px;
+  height: 40px;
+  padding: 0px 10px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  border: 1px solid #DADCE0;
+  background: #FFF;
+}
+
+
+
+.login-text-container {
+  width: 356px;
+  /* border: 1px solid; */
+}
+
+.login-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #3C4043;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: 0.25px;
+}
+
+.first-letter {
+  font-size: 50px;
+  /* color: tomato; */
+  color: rgb(102, 255, 71);
+}
+
+.logout-btn {
+  border-radius: 8px;
+  border: 1px solid #DADCE0;
+  font-family: "Poppins";
+}
+
+.login-btn:hover, .logout-btn:hover {
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color:#dddddd;
+}

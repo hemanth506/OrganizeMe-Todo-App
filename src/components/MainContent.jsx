@@ -216,10 +216,10 @@ export const MainContent = () => {
                 }}
               />
               <div style={{ display: "flex", flexDirection: "column" }}>
-                <span style={{}}>
+                <span>
                   {capitalizeUserName(userProfile.given_name)}
                 </span>
-                <button onClick={triggerLogout}>Log out</button>
+                <button onClick={triggerLogout} className="logout-btn">Log out</button>
               </div>
             </div>
           </header>
