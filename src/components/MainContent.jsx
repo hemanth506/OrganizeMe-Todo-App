@@ -156,6 +156,7 @@ export const MainContent = () => {
   const logOut = useCallback(() => {
     googleLogout();
     dispatch(setProfile(null));
+    localStorage.setItem("currentProfile", null);
     navigate("/");
   }, [userProfile]);
 

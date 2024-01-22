@@ -6,6 +6,7 @@ import { MainContent } from "../components/MainContent";
 import { setDefaultState } from "../redux/slice/CategorySlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setProfile } from "../redux/slice/ProfileSlice";
 
 export const CategoryContext = createContext();
 
@@ -16,15 +17,26 @@ export const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userProfile === null) {
-      // setTimeout(() => {
-      // }, 2 * 1000);
-      navigate("/");
+    if (window.performance) {
+      if (performance.navigation.type == 1) {
+        const currentProfile = localStorage.getItem("currentProfile");
+        if(currentProfile) {
+          dispatch(setProfile(JSON.parse(currentProfile)));
+        }
+      }
     }
+  }, [])
+  
+  useEffect(() => {
+    // if (userProfile === null) {
+    //   // setTimeout(() => {
+    //   // }, 2 * 1000);
+    //   navigate("/");
+    // }
     dispatch(setDefaultState());
-  }, [navigate, dispatch, userProfile]);
+  }, [dispatch]);
 
-  useEffect(() => {}, [userProfile]);
+  // useEffect(() => {}, [userProfile]);
 
   return (
     <CategoryContext.Provider value={activeCategory}>

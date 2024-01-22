@@ -25,6 +25,7 @@ function App() {
         })
         .then((res) => {
           console.log("🚀 ~ .then ~ res:", res);
+          localStorage.setItem("currentProfile", JSON.stringify(res.data));
           dispatch(setProfile(res.data));
         })
         .catch((err) => {
