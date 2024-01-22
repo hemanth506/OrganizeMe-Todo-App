@@ -23,7 +23,7 @@ export const Login = ({ setUser }) => {
       linkRef.current.click();
       navigate("/home");
     }
-  }, [userProfile]);
+  }, [userProfile, navigate]);
 
   return (
     <div className="container" style={mainDiv}>

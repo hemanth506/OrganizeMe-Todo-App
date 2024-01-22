@@ -22,7 +22,7 @@ export const Home = () => {
       navigate("/");
     }
     dispatch(setDefaultState());
-  }, []);
+  }, [navigate, dispatch, userProfile]);
 
   useEffect(() => {}, [userProfile]);
 

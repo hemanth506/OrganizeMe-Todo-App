@@ -4,14 +4,13 @@ import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import axios from "axios";
-import { setProfile } from "./redux/slice/ProfileSlice.js"
+import { setProfile } from "./redux/slice/ProfileSlice.js";
 import { useDispatch } from "react-redux";
-
 
 const USER_INFO_API = process.env.REACT_APP_USERINFO_API;
 
 function App() {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,10 +37,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={<Login setUser={setUser} />}
-          />
+          <Route path="/" element={<Login setUser={setUser} />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </BrowserRouter>
