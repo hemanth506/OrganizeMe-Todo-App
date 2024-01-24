@@ -322,7 +322,7 @@ const linksDivStyle = {
 
 const notesDivStyle = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
   gap: "10px",
   paddingRight: "40px",
 };
