@@ -1,5 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const checkIfContentPresentBasedOnTabs = (tab, mainContent, subContent) => {
+  if (tab === "todos") {
+    if(!mainContent) { return false; }
+  } else if (tab === "notes" || tab === "links") {
+    if(!mainContent || !subContent) { return false; }
+  }
+  return true;
+}
+
 const catagorySlice = createSlice({
   name: "category",
   initialState: [],
@@ -144,7 +153,7 @@ const catagorySlice = createSlice({
     },
     addContentBasedOnTab: (state, action) => {
       const { mainContent, tab, subContent, categoryID, subCategoryID } = action.payload;
-
+      console.log("mainContent: " + mainContent + " subContent" + subContent);
       console.log("action.payload", action.payload);
 
       if (tab !== "todos" && tab !== "notes" && tab !== "links") {
@@ -157,12 +166,16 @@ const catagorySlice = createSlice({
       };
 
       let updatedContent;
-      if (tab === "todos") {
-        updatedContent = { ...defaultContent, isCompleted: false };
-      } else if (tab === "notes") {
-        updatedContent = { ...defaultContent, description: subContent };
-      } else if (tab === "links") {
-        updatedContent = { ...defaultContent, contentURL: subContent };
+      if(checkIfContentPresentBasedOnTabs(tab, mainContent, subContent)) {
+        if (tab === "todos") {
+          updatedContent = { ...defaultContent, isCompleted: false };
+        } else if (tab === "notes") {
+          updatedContent = { ...defaultContent, description: subContent };
+        } else if (tab === "links") {
+          updatedContent = { ...defaultContent, contentURL: subContent };
+        }
+      } else {
+        return state;
       }
 
       console.log("updatedContent", updatedContent);

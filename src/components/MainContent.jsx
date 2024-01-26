@@ -80,21 +80,33 @@ export const MainContent = () => {
     }
   }, [categoryData, categoryID, subCategoryID]);
 
+  // checks if content present or not.
+  const checkIfContentPresentBasedOnTabs = useCallback((tab, mainContent, subContent) => {
+    if (tab === "todos") {
+      if(!mainContent) { return false; }
+    } else if (tab === "notes" || tab === "links") {
+      if(!mainContent || !subContent) { return false; }
+    }
+    return true;
+  }, []);
+
   // Add the content based on the tab selected
   const handleAddEvent = useCallback(() => {
-    dispatch(
-      addContentBasedOnTab({
-        mainContent,
-        tab,
-        subContent,
-        categoryID,
-        subCategoryID,
-      })
-    );
-    dispatch(updateLocalState());
-
-    setMainContent("");
-    setSubContent("");
+    if(checkIfContentPresentBasedOnTabs(tab, mainContent, subContent)) {
+      dispatch(
+        addContentBasedOnTab({
+          mainContent,
+          tab,
+          subContent,
+          categoryID,
+          subCategoryID,
+        })
+      );
+      dispatch(updateLocalState());
+  
+      setMainContent("");
+      setSubContent("");
+    }
   }, [mainContent, subContent, tab, categoryID, subCategoryID]);
 
   // deleteTodoId
