@@ -3,6 +3,7 @@
 .App {
   display: flex;
   font-family: Poppins;
+  white-space: pre-line;
 }
 
 ::-webkit-scrollbar {
