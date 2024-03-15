@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from "react";
-import { CategoryContext } from "./FileContainer";
+import { CategoryContext } from "../pages/HomePage";
 import { Button } from "@mui/material";
 import { createButton } from "../styling";
 import { ImCross } from "react-icons/im";

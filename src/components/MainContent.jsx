@@ -5,7 +5,7 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import { CategoryContext } from "./FileContainer";
+import { CategoryContext } from "../pages/HomePage.jsx";
 import { createButton } from "../styling.js";
 import { Box, Button, Tabs, Tab } from "@mui/material";
 import { FaPlus } from "react-icons/fa6";

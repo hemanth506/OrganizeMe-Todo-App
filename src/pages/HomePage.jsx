@@ -1,8 +1,8 @@
 import React, { useState, createContext, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import { SideNav } from "./SideNav";
-import { MainContent } from "./MainContent";
+import { SideNav } from "../components/SideNav";
+import { MainContent } from "../components/MainContent";
 import { setDefaultState } from "../redux/slice/CategorySlice";
 import { useDispatch } from "react-redux";
 
